@@ -15,7 +15,7 @@ import com.sun.net.httpserver.HttpExchange;
 
 public class DetailLoggedFilter extends Filter {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final static Logger logger = LoggerFactory.getLogger(DetailLoggedFilter.class);
 
     @Override
     public void doFilter(HttpExchange exchange, Chain chain) throws IOException {

@@ -34,3 +34,4 @@ dependency-reduced-pom.xml
 *.properties
 *.txt
 .DS_Store
+fqueue-*/
