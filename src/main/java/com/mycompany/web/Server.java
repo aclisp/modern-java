@@ -1,6 +1,8 @@
 package com.mycompany.web;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +17,7 @@ import org.springframework.util.StopWatch;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mycompany.util.JUL;
+import com.mycompany.web.beans.IndexPage;
 import com.mycompany.web.beans.JdbcHandlerReq;
 import com.mycompany.web.filters.DetailLoggedFilter;
 import com.sun.net.httpserver.Headers;
@@ -22,6 +25,10 @@ import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 
+import gg.jte.ContentType;
+import gg.jte.TemplateEngine;
+import gg.jte.output.WriterOutput;
+import gg.jte.resolve.ResourceCodeResolver;
 import io.lettuce.core.api.StatefulRedisConnection;
 
 public class Server {
@@ -33,6 +40,8 @@ public class Server {
 
     private static JdbcTemplate jdbc = null;
     private static StatefulRedisConnection<String, String> redis = null;
+    private static TemplateEngine templateEngine = TemplateEngine.create(new ResourceCodeResolver("templates"),
+            ContentType.Html);
 
     public static void main(String[] args) throws IOException, InterruptedException {
         StopWatch stopWatch = new StopWatch();
@@ -77,14 +86,16 @@ public class Server {
     }
 
     static void rootHander(HttpExchange exchange) throws IOException {
-        var reply = "Hello 世界!".getBytes();
+        var page = new IndexPage();
+        page.title = "Java";
+        page.content = "Hello 世界!";
         // try {
         // Thread.sleep(200);
         // } catch (InterruptedException e) {
         // }
-        exchange.sendResponseHeaders(200, reply.length);
-        try (var os = exchange.getResponseBody()) {
-            os.write(reply);
+        exchange.sendResponseHeaders(200, 0);
+        try (var writer = new BufferedWriter(new OutputStreamWriter(exchange.getResponseBody()))) {
+            templateEngine.render("index.jte", page, new WriterOutput(writer));
         }
     }
 

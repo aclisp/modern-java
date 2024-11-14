@@ -35,3 +35,4 @@ dependency-reduced-pom.xml
 *.txt
 .DS_Store
 fqueue-*/
+jte-classes/
