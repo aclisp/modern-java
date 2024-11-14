@@ -14,8 +14,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.util.StopWatch;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import com.mycompany.util.JUL;
+import com.mycompany.web.beans.JdbcHandlerReq;
 import com.mycompany.web.filters.DetailLoggedFilter;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpContext;
@@ -30,7 +30,6 @@ public class Server {
     }
     private final static Logger logger = LoggerFactory.getLogger(Server.class);
     private final static ObjectMapper objectMapper = new ObjectMapper();
-    private final static ObjectWriter jsonPrettyWriter = objectMapper.writerWithDefaultPrettyPrinter();
 
     private static JdbcTemplate jdbc = null;
     private static StatefulRedisConnection<String, String> redis = null;
@@ -48,7 +47,7 @@ public class Server {
         var redisInit = new RedisInitializer(shutdownHooks);
         redis = redisInit.getRedisConnection();
 
-        ThreadFactory factory = Thread.ofVirtual().name("executor-", 0).factory();
+        ThreadFactory factory = Thread.ofVirtual().name("vthread-", 0).factory();
         ExecutorService executor = Executors.newThreadPerTaskExecutor(factory);
         shutdownHooks.add(() -> executor.shutdown());
         HttpServer server = HttpServer.create(new InetSocketAddress(Config.get().serverPort), 0);
@@ -90,20 +89,16 @@ public class Server {
     }
 
     static void jdbcHandler(HttpExchange exchange) throws IOException {
-        byte[] input;
-        try (var is = exchange.getRequestBody()) {
-            input = is.readAllBytes();
-        }
+        JdbcHandlerReq req = objectMapper.readValue(exchange.getRequestBody(), JdbcHandlerReq.class);
+        req.validate();
 
-        if (input.length > 260)
-            throw new IllegalArgumentException();
+        var list = jdbc.queryForList("SELECT * FROM contacts WHERE email like ?", "%" + req.emailLike + "%");
 
-        var list = jdbc.queryForList("SELECT * FROM contacts WHERE email like ?", "hello%");
         Headers responseHeaders = exchange.getResponseHeaders();
         responseHeaders.add("Content-Type", "application/json");
         exchange.sendResponseHeaders(200, 0);
         try (var os = exchange.getResponseBody()) {
-            jsonPrettyWriter.writeValue(os, list);
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(os, list);
         }
     }
 

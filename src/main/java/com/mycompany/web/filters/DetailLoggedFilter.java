@@ -23,6 +23,7 @@ public class DetailLoggedFilter extends Filter {
         stopWatch.start();
         var requestHeaders = exchange.getRequestHeaders();
         var responseHeaders = exchange.getResponseHeaders();
+        responseHeaders.add("X-Request-ID", Thread.currentThread().getName());
         var newRequestBody = new BufferRecordedInputStream(requestHeaders, exchange.getRequestBody());
         var newResponseBody = new BufferRecordedOutputStream(responseHeaders, exchange.getResponseBody());
         var newExchange = new DelegatingHttpExchange(exchange) {
@@ -36,6 +37,17 @@ public class DetailLoggedFilter extends Filter {
         };
         try {
             chain.doFilter(newExchange);
+        } catch (Exception ex) {
+            logger.error("HttpHandler ERROR", ex);
+            int rCode = switch (ex) {
+                case IllegalArgumentException e -> 400;
+                default -> 500;
+            };
+            byte[] message = ex.getMessage().getBytes();
+            newExchange.sendResponseHeaders(rCode, message.length);
+            try (var os = newExchange.getResponseBody()) {
+                os.write(message);
+            }
         } finally {
             logger.debug("REQUEST headers - {}", stringifyHeaders(requestHeaders));
             logger.debug("REQUEST body - {}", newRequestBody);

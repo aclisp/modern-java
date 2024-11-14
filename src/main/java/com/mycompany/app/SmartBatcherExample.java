@@ -35,7 +35,9 @@ public class SmartBatcherExample {
                         e.printStackTrace();
                         return null;
                     }
-                }, FQueue::close, items -> {
+                },
+                FQueue::close,
+                items -> {
                     logger.info("fQueueBatcher items count - " + items.size());
                 });
         SmartBatcher<String, ConcurrentLinkedQueue<String>> memBatcher = new SmartBatcher<>(
@@ -43,7 +45,8 @@ public class SmartBatcherExample {
                 120,
                 1000,
                 10000,
-                ConcurrentLinkedQueue::new, null,
+                ConcurrentLinkedQueue::new,
+                null,
                 items -> {
                     logger.info("memBatcher items count - " + items.size());
                 });
