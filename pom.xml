@@ -62,10 +62,11 @@
       <version>2.18.1</version>
     </dependency>
     <!-- Netty HashedWheelTimer, provided by lettuce-core -->
-    <!-- <dependency>
+    <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-common</artifactId>
-    </dependency> -->
+      <version>4.1.115.Final</version>
+    </dependency>
     <!-- Spring ThreadPoolTaskScheduler -->
     <dependency>
       <groupId>org.springframework</groupId>
@@ -95,11 +96,11 @@
       <scope>runtime</scope>
     </dependency>
     <!-- Lettuce Redis -->
-    <dependency>
+    <!-- <dependency>
       <groupId>io.lettuce</groupId>
       <artifactId>lettuce-core</artifactId>
       <version>6.5.0.RELEASE</version>
-    </dependency>
+    </dependency> -->
     <!-- Java Template Engine -->
     <dependency>
       <groupId>gg.jte</groupId>

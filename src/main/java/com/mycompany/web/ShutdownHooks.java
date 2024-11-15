@@ -17,12 +17,15 @@ public class ShutdownHooks {
         shutdownHooks.push(runOnShutdown);
     }
 
-    public void await() throws InterruptedException {
+    public void activate() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             logger.info("About to shutdown...");
             shutdownHooks.forEach(hook -> hook.run());
             ensureShutdown.countDown();
         }, "ShutdownHooks"));
+    }
+
+    public void await() throws InterruptedException {
         ensureShutdown.await();
     }
 }

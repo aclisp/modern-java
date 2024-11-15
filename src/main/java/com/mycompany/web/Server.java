@@ -29,7 +29,6 @@ import gg.jte.ContentType;
 import gg.jte.TemplateEngine;
 import gg.jte.output.WriterOutput;
 import gg.jte.resolve.ResourceCodeResolver;
-import io.lettuce.core.api.StatefulRedisConnection;
 
 public class Server {
     static {
@@ -39,7 +38,7 @@ public class Server {
     private final static ObjectMapper objectMapper = new ObjectMapper();
 
     private static JdbcTemplate jdbc = null;
-    private static StatefulRedisConnection<String, String> redis = null;
+    // private static StatefulRedisConnection<String, String> redis = null;
     private static TemplateEngine templateEngine = TemplateEngine.create(new ResourceCodeResolver("templates"),
             ContentType.Html);
 
@@ -53,8 +52,8 @@ public class Server {
         dbInit.populateData();
         jdbc = dbInit.getJdbcTemplate();
 
-        var redisInit = new RedisInitializer(shutdownHooks);
-        redis = redisInit.getRedisConnection();
+        // var redisInit = new RedisInitializer(shutdownHooks);
+        // redis = redisInit.getRedisConnection();
 
         ThreadFactory factory = Thread.ofVirtual().name("vthread-", 0).factory();
         ExecutorService executor = Executors.newThreadPerTaskExecutor(factory);
@@ -69,7 +68,7 @@ public class Server {
         List<HttpContext> httpContexts = new ArrayList<>();
         httpContexts.add(server.createContext("/", Server::rootHander));
         httpContexts.add(server.createContext("/jdbc", Server::jdbcHandler));
-        httpContexts.add(server.createContext("/redis", Server::redisHandler));
+        // httpContexts.add(server.createContext("/redis", Server::redisHandler));
         httpContexts.forEach(context -> {
             var filters = context.getFilters();
             // filters.add(logBeforeFilter);
@@ -81,8 +80,7 @@ public class Server {
         logger.info("Server READY after {} seconds", stopWatch.getTotalTimeSeconds());
 
         shutdownHooks.add(() -> server.stop(1));
-        shutdownHooks.await();
-        System.out.println("Server SHUTDOWN");
+        shutdownHooks.activate();
     }
 
     static void rootHander(HttpExchange exchange) throws IOException {
@@ -114,15 +112,15 @@ public class Server {
     }
 
     static void redisHandler(HttpExchange exchange) throws IOException {
-        var foo = redis.sync().get("foo");
-        if (foo == null) {
-            foo = "<null>";
-        }
-        var reply = foo.getBytes();
-        exchange.sendResponseHeaders(200, reply.length);
-        try (var os = exchange.getResponseBody()) {
-            os.write(reply);
-        }
+        // var foo = redis.sync().get("foo");
+        // if (foo == null) {
+        // foo = "<null>";
+        // }
+        // var reply = foo.getBytes();
+        // exchange.sendResponseHeaders(200, reply.length);
+        // try (var os = exchange.getResponseBody()) {
+        // os.write(reply);
+        // }
     }
 
     static void loggingBeforeHandler(HttpExchange exchange) {
