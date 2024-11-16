@@ -48,8 +48,8 @@ public class Server {
 
         stopWatch.start();
         var dbInit = new DatabaseInitializer(shutdownHooks);
-        dbInit.createTables();
-        dbInit.populateData();
+        // dbInit.createTables();
+        // dbInit.populateData();
         jdbc = dbInit.getJdbcTemplate();
 
         // var redisInit = new RedisInitializer(shutdownHooks);

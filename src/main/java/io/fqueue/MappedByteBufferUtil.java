@@ -1,4 +1,4 @@
-package fqueue;
+package io.fqueue;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

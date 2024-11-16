@@ -1,4 +1,4 @@
-package fqueue;
+package io.fqueue;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

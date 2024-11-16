@@ -1,4 +1,4 @@
-package fqueue;
+package io.fqueue;
 
 public class FileEOFException extends Exception {
     public FileEOFException() {

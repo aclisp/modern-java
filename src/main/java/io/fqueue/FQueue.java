@@ -1,4 +1,4 @@
-package fqueue;
+package io.fqueue;
 
 import java.io.IOException;
 import java.util.AbstractQueue;

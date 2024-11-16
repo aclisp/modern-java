@@ -1,4 +1,4 @@
-package fqueue;
+package io.fqueue;
 
 import java.io.File;
 import java.io.IOException;

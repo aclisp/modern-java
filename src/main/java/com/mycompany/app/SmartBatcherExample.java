@@ -12,8 +12,8 @@ import com.mycompany.util.JUL;
 import com.mycompany.util.RandomStringUtils;
 import com.mycompany.util.SmartBatcher;
 
-import fqueue.FQueue;
-import fqueue.FileFormatException;
+import io.fqueue.FQueue;
+import io.fqueue.FileFormatException;
 
 public class SmartBatcherExample {
     static {

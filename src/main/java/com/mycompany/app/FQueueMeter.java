@@ -12,8 +12,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import com.mycompany.util.JUL;
 import com.mycompany.util.RandomStringUtils;
 
-import fqueue.FQueue;
-import fqueue.FileFormatException;
+import io.fqueue.FQueue;
+import io.fqueue.FileFormatException;
 
 public class FQueueMeter {
     static {
