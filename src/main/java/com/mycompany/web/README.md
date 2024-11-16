@@ -16,8 +16,11 @@ Components
 * **URL Router** - RouteKit
 * **Fault tolerance** - Resilience4j
 * **Database** - JdbcTemplate (spring-jdbc)
-* **HTML** rendering - jte
+* **HTML**
+  - Rendering - Java Template Engine
+  - Styling - Bootstrap 5
 * **Markdown processing** - commonmark
+* **Documentation** - MkDocs
 
 Threading Model
 ---
