@@ -3,6 +3,7 @@ package com.mycompany.web.filters;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -41,6 +42,7 @@ public class DetailLoggedFilter extends Filter {
             logger.error("HttpHandler ERROR", ex);
             int rCode = switch (ex) {
                 case IllegalArgumentException e -> 400;
+                case NoSuchElementException e -> 404;
                 default -> 500;
             };
             byte[] message = ex.getMessage().getBytes();

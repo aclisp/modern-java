@@ -1,8 +1,6 @@
 package com.mycompany.web;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,43 +15,41 @@ import org.springframework.util.StopWatch;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mycompany.util.JUL;
-import com.mycompany.web.beans.IndexPage;
-import com.mycompany.web.beans.JdbcHandlerReq;
 import com.mycompany.web.filters.DetailLoggedFilter;
-import com.sun.net.httpserver.Headers;
+import com.mycompany.web.handlers.HomeHandler;
+import com.mycompany.web.handlers.JdbcHandler;
+import com.mycompany.web.handlers.RouterHandler;
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
 import gg.jte.ContentType;
 import gg.jte.TemplateEngine;
-import gg.jte.output.WriterOutput;
 import gg.jte.resolve.ResourceCodeResolver;
+import io.routekit.RouterSetup;
 
 public class Server {
     static {
         JUL.initLogging();
     }
     private final static Logger logger = LoggerFactory.getLogger(Server.class);
-    private final static ObjectMapper objectMapper = new ObjectMapper();
-
-    private static JdbcTemplate jdbc = null;
-    // private static StatefulRedisConnection<String, String> redis = null;
-    private static TemplateEngine templateEngine = TemplateEngine.create(new ResourceCodeResolver("templates"),
-            ContentType.Html);
 
     public static void main(String[] args) throws IOException, InterruptedException {
         StopWatch stopWatch = new StopWatch();
-        ShutdownHooks shutdownHooks = new ShutdownHooks();
-
         stopWatch.start();
+
+        ShutdownHooks shutdownHooks = new ShutdownHooks();
+        ObjectMapper objectMapper = new ObjectMapper();
         var dbInit = new DatabaseInitializer(shutdownHooks);
         // dbInit.createTables();
         // dbInit.populateData();
-        jdbc = dbInit.getJdbcTemplate();
-
+        JdbcTemplate jdbc = dbInit.getJdbcTemplate();
         // var redisInit = new RedisInitializer(shutdownHooks);
-        // redis = redisInit.getRedisConnection();
+        // StatefulRedisConnection<String, String> redis =
+        // redisInit.getRedisConnection();
+        TemplateEngine templateEngine = TemplateEngine.create(new ResourceCodeResolver("templates"),
+                ContentType.Html);
 
         ThreadFactory factory = Thread.ofVirtual().name("vthread-", 0).factory();
         ExecutorService executor = Executors.newThreadPerTaskExecutor(factory);
@@ -66,8 +62,11 @@ public class Server {
         // Filter logAfterFilter = Filter.afterHandler("logAfter",
         // Server::loggingAfterHandler);
         List<HttpContext> httpContexts = new ArrayList<>();
-        httpContexts.add(server.createContext("/", Server::rootHander));
-        httpContexts.add(server.createContext("/jdbc", Server::jdbcHandler));
+        httpContexts.add(server.createContext("/", new RouterHandler(new RouterSetup<HttpHandler>()
+                .add("/", new HomeHandler(templateEngine))
+                .add("/jdbc", new JdbcHandler(jdbc, objectMapper))
+                .build())));
+        // httpContexts.add(server.createContext("/jdbc", Server::jdbcHandler));
         // httpContexts.add(server.createContext("/redis", Server::redisHandler));
         httpContexts.forEach(context -> {
             var filters = context.getFilters();
@@ -84,31 +83,9 @@ public class Server {
     }
 
     static void rootHander(HttpExchange exchange) throws IOException {
-        var page = new IndexPage();
-        page.title = "Java";
-        page.content = "Hello 世界!";
-        // try {
-        // Thread.sleep(200);
-        // } catch (InterruptedException e) {
-        // }
-        exchange.sendResponseHeaders(200, 0);
-        try (var writer = new BufferedWriter(new OutputStreamWriter(exchange.getResponseBody()))) {
-            templateEngine.render("index.jte", page, new WriterOutput(writer));
-        }
     }
 
     static void jdbcHandler(HttpExchange exchange) throws IOException {
-        JdbcHandlerReq req = objectMapper.readValue(exchange.getRequestBody(), JdbcHandlerReq.class);
-        req.validate();
-
-        var list = jdbc.queryForList("SELECT * FROM contacts WHERE email like ?", "%" + req.emailLike + "%");
-
-        Headers responseHeaders = exchange.getResponseHeaders();
-        responseHeaders.add("Content-Type", "application/json");
-        exchange.sendResponseHeaders(200, 0);
-        try (var os = exchange.getResponseBody()) {
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(os, list);
-        }
     }
 
     static void redisHandler(HttpExchange exchange) throws IOException {
