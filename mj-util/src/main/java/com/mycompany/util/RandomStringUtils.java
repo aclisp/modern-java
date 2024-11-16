@@ -1,6 +1,6 @@
 package com.mycompany.util;
 
-import io.netty.util.internal.ThreadLocalRandom;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class RandomStringUtils {
     public static String random(int targetStringLength) {

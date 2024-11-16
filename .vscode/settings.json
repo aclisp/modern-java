@@ -1,0 +1,37 @@
+{
+    "java.configuration.runtimes": [
+        {
+            "name": "JavaSE-1.8",
+            "path": "/Users/homerh/Java/jdk8u312",
+            "sources": "/Users/homerh/Java/jdk8u312/src.zip",
+            "javadoc": "https://docs.oracle.com/javase/8/docs/api",
+            "default": false
+        },
+        {
+            "name": "JavaSE-17",
+            "path": "/Users/homerh/Java/jdk-17.0.7",
+            "sources": "/Users/homerh/Java/jdk-17.0.7/lib/src.zip",
+            "javadoc": "https://docs.oracle.com/en/java/javase/17/docs/api",
+            "default": false
+        },
+        {
+            "name": "JavaSE-21",
+            "path": "/Users/homerh/Java/jdk-21.0.4",
+            "sources": "/Users/homerh/Java/jdk-21.0.4/lib/src.zip",
+            "javadoc": "https://docs.oracle.com/en/java/javase/21/docs/api",
+            "default": true
+        }
+    ],
+    "java.jdt.ls.java.home": "/Users/homerh/Java/jdk-21.0.4",
+    "java.server.launchMode": "Standard",
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "java.maven.downloadSources": true,
+    "java.eclipse.downloadSources": true,
+    "java.compile.nullAnalysis.mode": "automatic",
+    "[java]": {
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit",
+        }
+    }
+}

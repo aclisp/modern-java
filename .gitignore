@@ -28,10 +28,10 @@ replay_pid*
 target/
 
 # Others
-*.json
+/*.json
 *.db
 dependency-reduced-pom.xml
-*.properties
+/*.properties
 *.txt
 .DS_Store
 fqueue-*/
