@@ -1,4 +1,4 @@
-package com.mycompany.app;
+package com.mycompany.util;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
