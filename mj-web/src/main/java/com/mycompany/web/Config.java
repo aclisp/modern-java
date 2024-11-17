@@ -16,7 +16,8 @@ public class Config {
 
     public int serverPort = 8080;
     public String redisURI = "redis://127.0.0.1:6379";
-    public String h2URI = "./database.db";
+    public String h2URI = "./database";
+    public int h2Port = 28080;
 
     public static Config get() {
         if (config != null)

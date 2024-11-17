@@ -15,6 +15,7 @@ public class DatabaseInitializer {
         var config = new HikariConfig();
         List<String> settings = List.of(
                 "AUTO_SERVER=TRUE",
+                "AUTO_SERVER_PORT=" + Config.get().h2Port,
                 "MODE=PostgreSQL",
                 "DATABASE_TO_LOWER=TRUE",
                 "DEFAULT_NULL_ORDERING=HIGH");

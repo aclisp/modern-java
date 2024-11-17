@@ -42,8 +42,8 @@ public class Server {
         ShutdownHooks shutdownHooks = new ShutdownHooks();
         ObjectMapper objectMapper = new ObjectMapper();
         var dbInit = new DatabaseInitializer(shutdownHooks);
-        // dbInit.createTables();
-        // dbInit.populateData();
+        dbInit.createTables();
+        dbInit.populateData();
         JdbcTemplate jdbc = dbInit.getJdbcTemplate();
         // var redisInit = new RedisInitializer(shutdownHooks);
         // StatefulRedisConnection<String, String> redis =
