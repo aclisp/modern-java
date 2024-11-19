@@ -25,7 +25,7 @@ public class JdbcHandler implements HttpHandler {
         JdbcHandlerReq req = objectMapper.readValue(exchange.getRequestBody(), JdbcHandlerReq.class);
         req.validate();
 
-        var list = jdbc.queryForList("SELECT * FROM contacts WHERE email like ?", "%" + req.emailLike + "%");
+        var list = jdbc.queryForList("SELECT * FROM contacts WHERE email like ?", "%" + req.emailLike() + "%");
 
         Headers responseHeaders = exchange.getResponseHeaders();
         responseHeaders.add("Content-Type", "application/json");

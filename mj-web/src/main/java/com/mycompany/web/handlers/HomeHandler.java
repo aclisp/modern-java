@@ -21,9 +21,7 @@ public class HomeHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        var page = new IndexPage();
-        page.title = "Java";
-        page.content = "Hello 世界!";
+        var page = new IndexPage("Java", "Hello 世界!");
         // try {
         // Thread.sleep(200);
         // } catch (InterruptedException e) {

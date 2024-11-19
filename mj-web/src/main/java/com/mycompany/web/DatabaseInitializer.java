@@ -15,11 +15,11 @@ public class DatabaseInitializer {
         var config = new HikariConfig();
         List<String> settings = List.of(
                 "AUTO_SERVER=TRUE",
-                "AUTO_SERVER_PORT=" + Config.get().h2Port,
+                "AUTO_SERVER_PORT=" + Config.get().h2Port(),
                 "MODE=PostgreSQL",
                 "DATABASE_TO_LOWER=TRUE",
                 "DEFAULT_NULL_ORDERING=HIGH");
-        config.setJdbcUrl("jdbc:h2:" + Config.get().h2URI + ";" + String.join(";", settings));
+        config.setJdbcUrl("jdbc:h2:" + Config.get().h2URI() + ";" + String.join(";", settings));
         var ds = new HikariDataSource(config);
         shutdownHooks.add(() -> ds.close());
         var jdbc = new JdbcTemplate(ds);

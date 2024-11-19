@@ -1,6 +1,6 @@
 package com.mycompany.web.beans;
 
-public class IndexPage {
-    public String title;
-    public String content;
+public record IndexPage(
+        String title,
+        String content) {
 }

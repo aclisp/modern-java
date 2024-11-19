@@ -10,14 +10,21 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class Config {
+public record Config(
+        int serverPort,
+        String redisURI,
+        String h2URI,
+        int h2Port) {
+
     private final static Logger logger = LoggerFactory.getLogger(Config.class);
     private static Config config = null;
 
-    public int serverPort = 8080;
-    public String redisURI = "redis://127.0.0.1:6379";
-    public String h2URI = "./database";
-    public int h2Port = 28080;
+    public Config() {
+        this(8080,
+                "redis://127.0.0.1:6379",
+                "./database",
+                28080);
+    }
 
     public static Config get() {
         if (config != null)

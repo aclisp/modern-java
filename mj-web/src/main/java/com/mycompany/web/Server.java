@@ -54,7 +54,7 @@ public class Server {
         ThreadFactory factory = Thread.ofVirtual().name("vthread-", 0).factory();
         ExecutorService executor = Executors.newThreadPerTaskExecutor(factory);
         shutdownHooks.add(() -> executor.shutdown());
-        HttpServer server = HttpServer.create(new InetSocketAddress(Config.get().serverPort), 0);
+        HttpServer server = HttpServer.create(new InetSocketAddress(Config.get().serverPort()), 0);
         server.setExecutor(executor);
 
         // Filter logBeforeFilter = Filter.beforeHandler("logBefore",

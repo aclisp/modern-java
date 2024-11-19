@@ -1,7 +1,7 @@
 package com.mycompany.web.beans;
 
-public class JdbcHandlerReq {
-    public String emailLike;
+public record JdbcHandlerReq(
+        String emailLike) {
 
     public void validate() {
         if (emailLike == null)
